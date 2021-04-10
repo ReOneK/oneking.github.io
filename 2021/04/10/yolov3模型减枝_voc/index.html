@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>yolov3模型减枝-voc | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="YOLOv3模型剪枝一、数据处理 将标注数据放入data&#x2F;Annotations,图片数据放入data&#x2F;images 运行modify.py文件，避免因图片问题导致标注文件中图片的长宽为0的问题 将voc_label.py中classes修改为自己的训练类别，并分别运行maketxt.py、voc_label.py  二、模型剪枝1.正常训练   对应自己的训练数据修改data&#x2F;voc.data以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yolov3模型减枝-voc">
+<meta property="og:url" content="http://example.com/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9D_voc/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="YOLOv3模型剪枝一、数据处理 将标注数据放入data&#x2F;Annotations,图片数据放入data&#x2F;images 运行modify.py文件，避免因图片问题导致标注文件中图片的长宽为0的问题 将voc_label.py中classes修改为自己的训练类别，并分别运行maketxt.py、voc_label.py  二、模型剪枝1.正常训练   对应自己的训练数据修改data&#x2F;voc.data以">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-10T12:27:39.000Z">
+<meta property="article:modified_time" content="2021-04-10T12:31:45.348Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-yolov3模型减枝_voc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9D_voc/" class="article-date">
+  <time class="dt-published" datetime="2021-04-10T12:27:39.000Z" itemprop="datePublished">2021-04-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      yolov3模型减枝-voc
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="YOLOv3模型剪枝"><a href="#YOLOv3模型剪枝" class="headerlink" title="YOLOv3模型剪枝"></a>YOLOv3模型剪枝</h1><h2 id="一、数据处理"><a href="#一、数据处理" class="headerlink" title="一、数据处理"></a>一、数据处理</h2><ul>
+<li>将标注数据放入data/Annotations,图片数据放入data/images</li>
+<li>运行modify.py文件，避免因图片问题导致标注文件中图片的长宽为<br>0的问题</li>
+<li>将voc_label.py中classes修改为自己的训练类别，并分别运行maketxt.py、voc_label.py</li>
+</ul>
+<h2 id="二、模型剪枝"><a href="#二、模型剪枝" class="headerlink" title="二、模型剪枝"></a>二、模型剪枝</h2><h3 id="1-正常训练"><a href="#1-正常训练" class="headerlink" title="1.正常训练"></a>1.正常训练</h3><ul>
+<li><p><input checked="" disabled="" type="checkbox">  对应自己的训练数据修改data/voc.data以及voc.name</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox">  同时修改yolov3.cfg中yolo层对应的filters以及classes  </p>
+<pre><code>    filters=3*(classes+5)
+</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 train.py --data data/voc.data --batch-size 16 --accumulate 1 --weights weights/yolov3.weights --cfg cfg/yolov3-hand.cfg</span><br></pre></td></tr></table></figure>
+<h3 id="2-稀疏化训练"><a href="#2-稀疏化训练" class="headerlink" title="2.稀疏化训练"></a>2.稀疏化训练</h3></li>
+<li><p><code>-sr</code>开启稀疏化，<code>--s</code>指定稀疏因子大小，<code>--prune</code>指定稀疏类型。</p>
+</li>
+</ul>
+<p>其中：</p>
+<p><code>--prune 0</code>为正常剪枝和规整剪枝的稀疏化</p>
+<p><code>--prune 1</code>为极限剪枝的稀疏化</p>
+<p><code>--prune 2</code>为Tiny剪枝的稀疏化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 train.py --data data/voc.data --batch-size 16 --accumulate 1 --weights weights/yolov3.weights --cfg cfg/yolov3.cfg -sr --s 0.001 --prune 0 </span><br></pre></td></tr></table></figure>
+
+
+<table>
+<thead>
+<tr>
+<th>剪枝方式</th>
+<th><center>优点</center></th>
+<th><center>缺点</center></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正常剪枝</td>
+<td>不对shortcut剪枝，拥有可观且稳定的压缩率，无需微调。</td>
+<td>压缩率达不到极致。</td>
+</tr>
+<tr>
+<td>极限剪枝</td>
+<td>极高的压缩率。</td>
+<td>需要微调。</td>
+</tr>
+<tr>
+<td>规整剪枝</td>
+<td>专为硬件部署设计，剪枝后filter个数均为8的倍数，无需微调。</td>
+<td>为规整牺牲了部分压缩率。</td>
+</tr>
+<tr>
+<td>Tiny剪枝</td>
+<td>稳定的压缩率。</td>
+<td>由于Tiny本来已很小，压缩率中规中矩。</td>
+</tr>
+</tbody></table>
+<h3 id="3-模型剪枝"><a href="#3-模型剪枝" class="headerlink" title="3.模型剪枝"></a>3.模型剪枝</h3><ul>
+<li><input checked="" disabled="" type="checkbox"> 正常剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 normal_prune.py</span><br></pre></td></tr></table></figure></li>
+<li><input checked="" disabled="" type="checkbox"> 规整剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 regular_prune.py</span><br></pre></td></tr></table></figure></li>
+<li><input checked="" disabled="" type="checkbox"> 极限剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 shortcut_prune.py</span><br></pre></td></tr></table></figure></li>
+<li><input checked="" disabled="" type="checkbox"> Tiny剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 prune_tiny_yolo.py</span><br></pre></td></tr></table></figure>
+这里需要在对应的.py文件内，将opt内的cfg和weights变量指向第2步稀疏化后生成的cfg文件和weights文件。<br>此外，可通过增大代码中percent的值来获得更大的压缩率。（若稀疏化不到位，且percent值过大，程序会报错。）<h2 id="三、环境搭建"><a href="#三、环境搭建" class="headerlink" title="三、环境搭建"></a>三、环境搭建</h2></li>
+</ul>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <code>numpy</code></li>
+<li><input checked="" disabled="" type="checkbox"> <code>torch &gt;= 1.1.0</code></li>
+<li><input checked="" disabled="" type="checkbox"> <code>opencv-python</code></li>
+<li><input checked="" disabled="" type="checkbox"> <code>tqdm</code></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9D_voc/" data-id="cknbpwyy90000swvi69tkb0d8" data-title="yolov3模型减枝-voc" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2021/04/10/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9D_voc/">yolov3模型减枝-voc</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/10/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
