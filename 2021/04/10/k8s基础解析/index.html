@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="yolov3模型减枝voc, 言念君子，温其如玉">
+    <meta name="keywords" content="k8s基础解析, 言念君子，温其如玉">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>yolov3模型减枝voc | 言念君子，温其如玉</title>
+    <title>k8s基础解析 | 言念君子，温其如玉</title>
     <link rel="icon" type="image/png" href="/oneking.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/oneking.github.io/libs/awesome/css/all.css">
@@ -266,12 +266,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/oneking.github.io/medias/featureimages/20.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/oneking.github.io/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">yolov3模型减枝voc</h1>
+                    <h1 class="description center-align post-title">k8s基础解析</h1>
                 </div>
             </div>
         </div>
@@ -387,16 +387,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/oneking.github.io/tags/Deep-Learning/">
-                                <span class="chip bg-color">Deep Learning</span>
+                            <a href="/oneking.github.io/tags/k8s/">
+                                <span class="chip bg-color">k8s</span>
                             </a>
                         
-                            <a href="/oneking.github.io/tags/yolo-v3/">
-                                <span class="chip bg-color">yolo v3</span>
+                            <a href="/oneking.github.io/tags/pod/">
+                                <span class="chip bg-color">pod</span>
                             </a>
                         
-                            <a href="/oneking.github.io/tags/Object-Detection/">
-                                <span class="chip bg-color">Object Detection</span>
+                            <a href="/oneking.github.io/tags/RS/">
+                                <span class="chip bg-color">RS</span>
                             </a>
                         
                     </div>
@@ -407,8 +407,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/oneking.github.io/categories/Marchine-Learning/" class="post-category">
-                                Marchine Learning
+                            <a href="/oneking.github.io/categories/k8s/" class="post-category">
+                                k8s
                             </a>
                         
                     </div>
@@ -427,21 +427,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
-                    2021-04-12
+                    2021-04-15
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    472
+                    2.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
-                    1 Min
+                    7 Min
                 </div>
                 
 
@@ -461,71 +461,25 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="YOLOv3模型剪枝"><a href="#YOLOv3模型剪枝" class="headerlink" title="YOLOv3模型剪枝"></a>YOLOv3模型剪枝</h1><h2 id="一、数据处理"><a href="#一、数据处理" class="headerlink" title="一、数据处理"></a>一、数据处理</h2><ul>
-<li>将标注数据放入data/Annotations,图片数据放入data/images</li>
-<li>运行modify.py文件，避免因图片问题导致标注文件中图片的长宽为<br>0的问题</li>
-<li>将voc_label.py中classes修改为自己的训练类别，并分别运行maketxt.py、voc_label.py</li>
-</ul>
-<h2 id="二、模型剪枝"><a href="#二、模型剪枝" class="headerlink" title="二、模型剪枝"></a>二、模型剪枝</h2><h3 id="1-正常训练"><a href="#1-正常训练" class="headerlink" title="1.正常训练"></a>1.正常训练</h3><ul>
-<li><p><input checked disabled type="checkbox">  对应自己的训练数据修改data/voc.data以及voc.name</p>
-</li>
-<li><p><input checked disabled type="checkbox">  同时修改yolov3.cfg中yolo层对应的filters以及classes  </p>
-<pre><code>    filters=3*(classes+5)
-</code></pre>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 train.py --data data/voc.data --batch-size 16 --accumulate 1 --weights weights/yolov3.weights --cfg cfg/yolov3-hand.cfg</span><br></pre></td></tr></table></figure>
-<h3 id="2-稀疏化训练"><a href="#2-稀疏化训练" class="headerlink" title="2.稀疏化训练"></a>2.稀疏化训练</h3></li>
-<li><p><code>-sr</code>开启稀疏化，<code>--s</code>指定稀疏因子大小，<code>--prune</code>指定稀疏类型。</p>
-</li>
-</ul>
-<p>其中：</p>
-<p><code>--prune 0</code>为正常剪枝和规整剪枝的稀疏化</p>
-<p><code>--prune 1</code>为极限剪枝的稀疏化</p>
-<p><code>--prune 2</code>为Tiny剪枝的稀疏化</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 train.py --data data/voc.data --batch-size 16 --accumulate 1 --weights weights/yolov3.weights --cfg cfg/yolov3.cfg -sr --s 0.001 --prune 0 </span><br></pre></td></tr></table></figure>
-
-
-<table>
-<thead>
-<tr>
-<th>剪枝方式</th>
-<th><center>优点</center></th>
-<th><center>缺点</center></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>正常剪枝</td>
-<td>不对shortcut剪枝，拥有可观且稳定的压缩率，无需微调。</td>
-<td>压缩率达不到极致。</td>
-</tr>
-<tr>
-<td>极限剪枝</td>
-<td>极高的压缩率。</td>
-<td>需要微调。</td>
-</tr>
-<tr>
-<td>规整剪枝</td>
-<td>专为硬件部署设计，剪枝后filter个数均为8的倍数，无需微调。</td>
-<td>为规整牺牲了部分压缩率。</td>
-</tr>
-<tr>
-<td>Tiny剪枝</td>
-<td>稳定的压缩率。</td>
-<td>由于Tiny本来已很小，压缩率中规中矩。</td>
-</tr>
-</tbody></table>
-<h3 id="3-模型剪枝"><a href="#3-模型剪枝" class="headerlink" title="3.模型剪枝"></a>3.模型剪枝</h3><ul>
-<li><input checked disabled type="checkbox"> 正常剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 normal_prune.py</span><br></pre></td></tr></table></figure></li>
-<li><input checked disabled type="checkbox"> 规整剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 regular_prune.py</span><br></pre></td></tr></table></figure></li>
-<li><input checked disabled type="checkbox"> 极限剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 shortcut_prune.py</span><br></pre></td></tr></table></figure></li>
-<li><input checked disabled type="checkbox"> Tiny剪枝<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 prune_tiny_yolo.py</span><br></pre></td></tr></table></figure>
-这里需要在对应的.py文件内，将opt内的cfg和weights变量指向第2步稀疏化后生成的cfg文件和weights文件。<br>此外，可通过增大代码中percent的值来获得更大的压缩率。（若稀疏化不到位，且percent值过大，程序会报错。）<h2 id="三、环境搭建"><a href="#三、环境搭建" class="headerlink" title="三、环境搭建"></a>三、环境搭建</h2></li>
-</ul>
-<ul>
-<li><input checked disabled type="checkbox"> <code>numpy</code></li>
-<li><input checked disabled type="checkbox"> <code>torch &gt;= 1.1.0</code></li>
-<li><input checked disabled type="checkbox"> <code>opencv-python</code></li>
-<li><input checked disabled type="checkbox"> <code>tqdm</code></li>
-</ul>
+                <p>一、关于k8s的理解<br>k8s作为一个容器编排平台，其核心功能是编排。</p>
+<p>Pod是k8s的最小调度单位，具有很多的字段和属性。其编排的实现主要是通过一个个控制器根据被控制对象的属性和字段实现的。</p>
+<p>在k8s中，每个build-in资源类型（Deployment,Statefulset…也就是内置类型）都有对应的控制器,都遵循一个通用的编排模式：Reconcile loop(调谐循环).<br>‘’’<br>for {<br>actualState := GetResourceActualState(rsvc)<br>expectState := GetResourceExpectState(rsvc)<br>if actualState == expectState {<br>// do nothing<br>} else {<br>Reconcile(rsvc)<br>}<br>}<br>‘’’<br>调谐循环;<br>          实现方式类似于一个无限循环，通过不断地对比资源的实际状态于我们期望的状态（事件驱动+定时同步），如果不同则进行Reconcile（调谐：最终结果一般是对被控制对象的某种写操作，比如增/删/改  pod）。</p>
+<p>4.声明式api<br>          所谓声明式就是“告诉 K8s 你要什么，而不是告诉它怎么做的命令”，一个很熟悉的例子就是 SQL，你“告诉 DB 根据条件和各类算子返回数据，而不是告诉它怎么遍历，过滤，聚合”。在 K8s 里面，声明式的体现就是 kubectl apply 命令，在对象创建和后续更新中一直使用相同的 apply 命令，告诉 K8s 对象的终态即可，底层是通过执行了一个对原有 API 对象的 PATCH 操作来实现的，可以一次性处理多个写操作，具备 Merge 能力 diff 出最终的 PATCH，而命令式一次只能处理一个写请求。</p>
+<p>5.像build-in资源一样构建自己的自定义资源（CRD-Customize Resource Definition）<br>           对于用户来说，实现 CRD 扩展主要做两件事：<br>                    1.编写 CRD 并将其部署到 K8s 集群里；（这一步的作用就是让 K8s 知道有这个资源及其结构属性，在用户提交该自定义资源的定义时（通常是 YAML 文件定义），K8s 能够成功校验该资源并创建出对应的 Go struct 进行持久化，同时触发控制器的调谐逻辑。）<br>                    2.编写 Controller 并将其部署到 K8s 集群里。（这一步的作用就是实现调谐逻辑。）</p>
+<p>二、kubebuilder實現流程</p>
+<p>首先是我們自己定義CRDs文件（通常是yaml文件）</p>
+<p>Scheme組件主要是负责將CRD文件中我的GRVs映射成GO type，通过射成go type。控制器可以通过Go type获取到期望狀態以及其它辅助信息進行调谐逻辑。</p>
+<p>Cache組件负责在 Controller 进程里面根据 Scheme 同步 Api Server 中所有该 Controller 关心 GVKs 的 GVRs，其核心是 GVK -&gt; Informer 的映射，Informer 会负责监听对应 GVK 的 GVRs 的创建/删除/更新操作，以触发 Controller 的 Reconcile 逻辑。<br>主要作用有兩個：<br>第一个是从Api server中获取实际状态（ListandWatch）<br>第二个是衝从cheme中获取期望状态（Watch）<br>通过比较两种状态来触发调谐循环（Reconcile  Loop)</p>
+<p>Client組件主要是负责对某些资源类型进行添加-刪除-更新等操作：<br>查詢功能主要是实际查询本地的Cache(R),写操作是直接访问Api Server(W)</p>
+<p>Index:由于 Controller 经常要对 Cache 进行查询，Kubebuilder 提供 Index utility 给 Cache 加索引提升查询效率。</p>
+<p>Finalizer:在一般情况下，如果资源被删除之后，我们虽然能够被触发删除事件，但是这个时候从 Cache 里面无法读取任何被删除对象的信息，这样一来，导致很多垃圾清理工作因为信息不足无法进行，K8s 的 Finalizer 字段用于处理这种情况。在 K8s 中，只要对象 ObjectMeta 里面的 Finalizers 不为空，对该对象的 delete 操作就会转变为 update 操作，具体说就是 update  deletionTimestamp 字段，其意义就是告诉 K8s 的 GC“在deletionTimestamp 这个时刻之后，只要 Finalizers 为空，就立马删除掉该对象”。</p>
+<p>OwenrReference:K8s GC 在删除一个对象时，任何 ownerReference 是该对象的对象都会被清除，与此同时，Kubebuidler 支持所有对象的变更都会触发 Owner 对象 controller 的 Reconcile 方法。<br>方便反向查找创建资源的对象<br>方便进行级联删除</p>
+<p>三、附带图示<br>控制循环中逻辑的传感器主要由 Reflector、Informer、Indexer 三个组件构成。<br><img src="/oneking.github.io/oneking.github/1.png" alt="control-logic"></p>
+<p>Reflector 通过 List 和 Watch K8s server 来获取资源的数据。List 用来在 Controller 重启以及 Watch 中断的情况下，进行系统资源的全量更新；而 Watch 则在多次 List 之间进行增量的资源更新；Reflector 在获取新的资源数据后，会在 Delta 队列中塞入一个包括资源对象信息本身以及资源对象事件类型的 Delta 记录，Delta 队列中可以保证同一个对象在队列中仅有一条记录，从而避免 Reflector 重新 List 和 Watch 的时候产生重复的记录。<br> <br>Informer 组件不断地从 Delta 队列中弹出 delta 记录，然后把资源对象交给 indexer，让 indexer 把资源记录在一个缓存中，缓存在默认设置下是用资源的命名空间来做索引的，并且可以被 Controller Manager 或多个 Controller 所共享。之后，再把这个事件交给事件的回调函数</p>
+<p>控制循环中的控制器组件主要由事件处理函数以及 worker 组成，事件处理函数之间会相互关注资源的新增、更新、删除的事件，并根据控制器的逻辑去决定是否需要处理。对需要处理的事件，会把事件关联资源的命名空间以及名字塞入一个工作队列中，并且由后续的 worker 池中的一个 Worker 来处理，工作队列会对存储的对象进行去重，从而避免多个 Woker 处理同一个资源的情况。<br> <br>Worker 在处理资源对象时，一般需要用资源的名字来重新获得最新的资源数据，用来创建或者更新资源对象，或者调用其他的外部服务，Worker 如果处理失败的时候，一般情况下会把资源的名字重新加入到工作队列中，从而方便之后进行重试。</p>
+<p>控制循环例子-扩容（RS）<br>ReplicaSet 是一个用来描述无状态应用的扩缩容行为的资源， ReplicaSet controler 通过监听 ReplicaSet 资源来维持应用希望的状态数量，ReplicaSet 中通过 selector 来匹配所关联的 Pod，在这里考虑 ReplicaSet rsA 的，replicas 从 2 被改到 3 的场景。<br><img src="/oneking.github.io/oneking.github/2.png" alt="RS"></p>
+<p>首先，Reflector 会 watch 到 ReplicaSet 和 Pod 两种资源的变化,发现 ReplicaSet 发生变化后，在 delta 队列中塞入了对象是 rsA，而且类型是更新的记录。<br> <br>Informer 一方面把新的 ReplicaSet 更新到缓存中，并与 Namespace nsA 作为索引。另外一方面，调用 Update 的回调函数，ReplicaSet 控制器发现 ReplicaSet 发生变化后会把字符串的 nsA/rsA 字符串塞入到工作队列中，工作队列后的一个 Worker 从工作队列中取到了 nsA/rsA 这个字符串的 key，并且从缓存中取到了最新的 ReplicaSet 数据。<br> <br>Worker 通过比较 ReplicaSet 中 spec 和 status 里的数值，发现需要对这个 ReplicaSet 进行扩容，因此 ReplicaSet 的 Worker 创建了一个 Pod，这个 pod 中的 Ownereference 取向了 ReplicaSet rsA。<br><img src="/oneking.github.io/oneking.github/3.png" alt="RS2"></p>
+<p>然后 Reflector Watch 到的 Pod 新增事件，在 delta 队列中额外加入了 Add 类型的 deta 记录，一方面把新的 Pod 记录通过 Indexer 存储到了缓存中，另一方面调用了 ReplicaSet 控制器的 Add 回调函数，Add 回调函数通过检查 pod ownerReferences 找到了对应的 ReplicaSet，并把包括 ReplicaSet 命名空间和字符串塞入到了工作队列中。<br> <br>ReplicaSet 的 Woker 在得到新的工作项之后，从缓存中取到了新的 ReplicaSet 记录，并得到了其所有创建的 Pod，因为 ReplicaSet 的状态不是最新的，也就是所有创建 Pod 的数量不是最新的。因此在此时 ReplicaSet 更新 status 使得 spec 和 status 达成一致。</p>
 
                 
             </div>
@@ -552,7 +506,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://reonek.github.io/oneking.github.io/oneking.github.io/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9Dvoc/">https://reonek.github.io/oneking.github.io/oneking.github.io/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9Dvoc/</a>
+                    <a href="https://reonek.github.io/oneking.github.io/oneking.github.io/2021/04/10/k8s%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/">https://reonek.github.io/oneking.github.io/oneking.github.io/2021/04/10/k8s%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -590,16 +544,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/oneking.github.io/tags/Deep-Learning/">
-                                    <span class="chip bg-color">Deep Learning</span>
+                                <a href="/oneking.github.io/tags/k8s/">
+                                    <span class="chip bg-color">k8s</span>
                                 </a>
                             
-                                <a href="/oneking.github.io/tags/yolo-v3/">
-                                    <span class="chip bg-color">yolo v3</span>
+                                <a href="/oneking.github.io/tags/pod/">
+                                    <span class="chip bg-color">pod</span>
                                 </a>
                             
-                                <a href="/oneking.github.io/tags/Object-Detection/">
-                                    <span class="chip bg-color">Object Detection</span>
+                                <a href="/oneking.github.io/tags/RS/">
+                                    <span class="chip bg-color">RS</span>
                                 </a>
                             
                         </div>
@@ -672,10 +626,9 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;Current
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
                 <a href="/oneking.github.io/2021/04/10/yolov3%E6%A8%A1%E5%9E%8B%E5%87%8F%E6%9E%9Dvoc/">
                     <div class="card-image">
@@ -693,9 +646,9 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-10
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-10
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -708,7 +661,6 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
@@ -732,7 +684,7 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
+                Current&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
                 <a href="/oneking.github.io/2021/04/10/k8s%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/">
@@ -766,6 +718,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
