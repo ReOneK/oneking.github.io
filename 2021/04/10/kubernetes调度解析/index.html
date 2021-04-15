@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="言念君子，温其如玉">
+    <meta name="keywords" content="k8s基础解析, 言念君子，温其如玉">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>言念君子，温其如玉</title>
+    <title>k8s基础解析 | 言念君子，温其如玉</title>
     <link rel="icon" type="image/png" href="/oneking.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/oneking.github.io/libs/awesome/css/all.css">
@@ -266,12 +266,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/oneking.github.io/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/oneking.github.io/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">k8s基础解析</h1>
                 </div>
             </div>
         </div>
@@ -477,7 +477,7 @@
 <p>Finalizer:在一般情况下，如果资源被删除之后，我们虽然能够被触发删除事件，但是这个时候从 Cache 里面无法读取任何被删除对象的信息，这样一来，导致很多垃圾清理工作因为信息不足无法进行，K8s 的 Finalizer 字段用于处理这种情况。在 K8s 中，只要对象 ObjectMeta 里面的 Finalizers 不为空，对该对象的 delete 操作就会转变为 update 操作，具体说就是 update  deletionTimestamp 字段，其意义就是告诉 K8s 的 GC“在deletionTimestamp 这个时刻之后，只要 Finalizers 为空，就立马删除掉该对象”。</p>
 <p>OwenrReference:K8s GC 在删除一个对象时，任何 ownerReference 是该对象的对象都会被清除，与此同时，Kubebuidler 支持所有对象的变更都会触发 Owner 对象 controller 的 Reconcile 方法。<br>方便反向查找创建资源的对象<br>方便进行级联删除</p>
 <p>三、附带图示<br>控制循环中逻辑的传感器主要由 Reflector、Informer、Indexer 三个组件构成。</p>
-<p><img src="/oneking.github.io/oneking.github/1.png" alt="1"></p>
+<p><img src="/oneking.github.io/oneking.github/1.png"></p>
 <p>Reflector 通过 List 和 Watch K8s server 来获取资源的数据。List 用来在 Controller 重启以及 Watch 中断的情况下，进行系统资源的全量更新；而 Watch 则在多次 List 之间进行增量的资源更新；Reflector 在获取新的资源数据后，会在 Delta 队列中塞入一个包括资源对象信息本身以及资源对象事件类型的 Delta 记录，Delta 队列中可以保证同一个对象在队列中仅有一条记录，从而避免 Reflector 重新 List 和 Watch 的时候产生重复的记录。</p>
 <p>Informer 组件不断地从 Delta 队列中弹出 delta 记录，然后把资源对象交给 indexer，让 indexer 把资源记录在一个缓存中，缓存在默认设置下是用资源的命名空间来做索引的，并且可以被 Controller Manager 或多个 Controller 所共享。之后，再把这个事件交给事件的回调函数控制</p>
 <p>循环中的控制器组件主要由事件处理函数以及 worker 组成，事件处理函数之间会相互关注资源的新增、更新、删除的事件，并根据控制器的逻辑去决定是否需要处理。对需要处理的事件，会把事件关联资源的命名空间以及名字塞入一个工作队列中，并且由后续的 worker 池中的一个 Worker 来处理，工作队列会对存储的对象进行去重，从而避免多个 Woker 处理同一个资源的情况。</p>
@@ -701,9 +701,9 @@
                     <div class="card-image">
                         
                         
-                        <img src="/oneking.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="/oneking.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="k8s基础解析">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">k8s基础解析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
