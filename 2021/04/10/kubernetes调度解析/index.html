@@ -461,35 +461,52 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>一、关于k8s的理解<br>k8s作为一个容器编排平台，其核心功能是编排。</p>
-<p>Pod是k8s的最小调度单位，具有很多的字段和属性。其编排的实现主要是通过一个个控制器根据被控制对象的属性和字段实现的。</p>
-<p>在k8s中，每个build-in资源类型（Deployment,Statefulset…也就是内置类型）都有对应的控制器,都遵循一个通用的编排模式：Reconcile loop(调谐循环).</p>
+                <h1 id="一、关于k8s的理解"><a href="#一、关于k8s的理解" class="headerlink" title="一、关于k8s的理解"></a>一、关于k8s的理解</h1><ol>
+<li><h5 id="k8s作为一个容器编排平台，其核心功能是编排。"><a href="#k8s作为一个容器编排平台，其核心功能是编排。" class="headerlink" title="k8s作为一个容器编排平台，其核心功能是编排。"></a>k8s作为一个<strong>容器编排</strong>平台，其核心功能是编排。</h5></li>
+<li><h5 id="Pod是k8s的最小调度单位，具有很多的字段和属性。其编排的实现主要是通过一个个控制器根据被控制对象的属性和字段实现的。"><a href="#Pod是k8s的最小调度单位，具有很多的字段和属性。其编排的实现主要是通过一个个控制器根据被控制对象的属性和字段实现的。" class="headerlink" title="Pod是k8s的最小调度单位，具有很多的字段和属性。其编排的实现主要是通过一个个控制器根据被控制对象的属性和字段实现的。"></a>Pod是k8s的最小调度单位，具有很多的<strong>字段和属性</strong>。其编排的实现主要是通过一个个控制器根据被控制对象的属性和字段实现的。</h5></li>
+<li><h5 id="在k8s中，每个build-in资源类型（Deployment-Statefulset…也就是内置类型）都有对应的控制器-都遵循一个通用的编排模式：Reconcile-loop-调谐循环"><a href="#在k8s中，每个build-in资源类型（Deployment-Statefulset…也就是内置类型）都有对应的控制器-都遵循一个通用的编排模式：Reconcile-loop-调谐循环" class="headerlink" title="在k8s中，每个build-in资源类型（Deployment,Statefulset…也就是内置类型）都有对应的控制器,都遵循一个通用的编排模式：Reconcile loop(调谐循环)."></a>在k8s中，每个build-in资源类型（Deployment,Statefulset…也就是内置类型）都有对应的控制器,都遵循一个通用的编排模式：<strong>Reconcile loop</strong>(调谐循环).</h5></li>
+</ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">for &#123;</span><br><span class="line">	actualState :&#x3D; GetResourceActualState(rsvc)</span><br><span class="line">	expectState :&#x3D; GetResourceExpectState(rsvc)</span><br><span class="line">	if actualState &#x3D;&#x3D; expectState &#123;</span><br><span class="line">	&#x2F;&#x2F; do nothing</span><br><span class="line">&#125; else &#123;</span><br><span class="line">	Reconcile(rsvc)</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调谐循环;<br>          实现方式类似于一个无限循环，通过不断地对比资源的实际状态于我们期望的状态（事件驱动+定时同步），如果不同则进行Reconcile（调谐：最终结果一般是对被控制对象的某种写操作，比如增/删/改  pod）。</p>
-<p>4.声明式api<br>          所谓声明式就是“告诉 K8s 你要什么，而不是告诉它怎么做的命令”，一个很熟悉的例子就是 SQL，你“告诉 DB 根据条件和各类算子返回数据，而不是告诉它怎么遍历，过滤，聚合”。在 K8s 里面，声明式的体现就是 kubectl apply 命令，在对象创建和后续更新中一直使用相同的 apply 命令，告诉 K8s 对象的终态即可，底层是通过执行了一个对原有 API 对象的 PATCH 操作来实现的，可以一次性处理多个写操作，具备 Merge 能力 diff 出最终的 PATCH，而命令式一次只能处理一个写请求。</p>
-<p>5.像build-in资源一样构建自己的自定义资源（CRD-Customize Resource Definition）<br>           对于用户来说，实现 CRD 扩展主要做两件事：<br>                    1.编写 CRD 并将其部署到 K8s 集群里；（这一步的作用就是让 K8s 知道有这个资源及其结构属性，在用户提交该自定义资源的定义时（通常是 YAML 文件定义），K8s 能够成功校验该资源并创建出对应的 Go struct 进行持久化，同时触发控制器的调谐逻辑。）<br>                    2.编写 Controller 并将其部署到 K8s 集群里。（这一步的作用就是实现调谐逻辑。）</p>
-<p>二、kubebuilder實現流程</p>
-<p>首先是我們自己定義CRDs文件（通常是yaml文件）</p>
-<p>Scheme組件主要是负责將CRD文件中我的GRVs映射成GO type，通过射成go type。控制器可以通过Go type获取到期望狀態以及其它辅助信息進行调谐逻辑。</p>
-<p>Cache組件负责在 Controller 进程里面根据 Scheme 同步 Api Server 中所有该 Controller 关心 GVKs 的 GVRs，其核心是 GVK -&gt; Informer 的映射，Informer 会负责监听对应 GVK 的 GVRs 的创建/删除/更新操作，以触发 Controller 的 Reconcile 逻辑。<br>主要作用有兩個：<br>第一个是从Api server中获取实际状态（ListandWatch）<br>第二个是衝从cheme中获取期望状态（Watch）<br>通过比较两种状态来触发调谐循环（Reconcile  Loop)</p>
-<p>Client組件主要是负责对某些资源类型进行添加-刪除-更新等操作：<br>查詢功能主要是实际查询本地的Cache(R),写操作是直接访问Api Server(W)</p>
-<p>Index:由于 Controller 经常要对 Cache 进行查询，Kubebuilder 提供 Index utility 给 Cache 加索引提升查询效率。</p>
-<p>Finalizer:在一般情况下，如果资源被删除之后，我们虽然能够被触发删除事件，但是这个时候从 Cache 里面无法读取任何被删除对象的信息，这样一来，导致很多垃圾清理工作因为信息不足无法进行，K8s 的 Finalizer 字段用于处理这种情况。在 K8s 中，只要对象 ObjectMeta 里面的 Finalizers 不为空，对该对象的 delete 操作就会转变为 update 操作，具体说就是 update  deletionTimestamp 字段，其意义就是告诉 K8s 的 GC“在deletionTimestamp 这个时刻之后，只要 Finalizers 为空，就立马删除掉该对象”。</p>
-<p>OwenrReference:K8s GC 在删除一个对象时，任何 ownerReference 是该对象的对象都会被清除，与此同时，Kubebuidler 支持所有对象的变更都会触发 Owner 对象 controller 的 Reconcile 方法。<br>方便反向查找创建资源的对象<br>方便进行级联删除</p>
-<p>三、附带图示<br>控制循环中逻辑的传感器主要由 Reflector、Informer、Indexer 三个组件构成。</p>
-<p><img src="1.png"></p>
-<p>Reflector 通过 List 和 Watch K8s server 来获取资源的数据。List 用来在 Controller 重启以及 Watch 中断的情况下，进行系统资源的全量更新；而 Watch 则在多次 List 之间进行增量的资源更新；Reflector 在获取新的资源数据后，会在 Delta 队列中塞入一个包括资源对象信息本身以及资源对象事件类型的 Delta 记录，Delta 队列中可以保证同一个对象在队列中仅有一条记录，从而避免 Reflector 重新 List 和 Watch 的时候产生重复的记录。</p>
-<p>Informer 组件不断地从 Delta 队列中弹出 delta 记录，然后把资源对象交给 indexer，让 indexer 把资源记录在一个缓存中，缓存在默认设置下是用资源的命名空间来做索引的，并且可以被 Controller Manager 或多个 Controller 所共享。之后，再把这个事件交给事件的回调函数控制</p>
-<p>循环中的控制器组件主要由事件处理函数以及 worker 组成，事件处理函数之间会相互关注资源的新增、更新、删除的事件，并根据控制器的逻辑去决定是否需要处理。对需要处理的事件，会把事件关联资源的命名空间以及名字塞入一个工作队列中，并且由后续的 worker 池中的一个 Worker 来处理，工作队列会对存储的对象进行去重，从而避免多个 Woker 处理同一个资源的情况。</p>
-<p>Worker 在处理资源对象时，一般需要用资源的名字来重新获得最新的资源数据，用来创建或者更新资源对象，或者调用其他的外部服务，Worker 如果处理失败的时候，一般情况下会把资源的名字重新加入到工作队列中，从而方便之后进行重试。</p>
-<p>控制循环例子-扩容（RS）<br>ReplicaSet 是一个用来描述无状态应用的扩缩容行为的资源， ReplicaSet controler 通过监听 ReplicaSet 资源来维持应用希望的状态数量，ReplicaSet 中通过 selector 来匹配所关联的 Pod，在这里考虑 ReplicaSet rsA 的，replicas 从 2 被改到 3 的场景。</p>
+<p><code>调谐循环</code>;<br>          实现方式类似于一个无限循环，通过不断地对比资源的实际状态于我们期望的状态（事件驱动+定时同步），如果不同则进行Reconcile（调谐：最终结果一般是对被控制对象的某种写操作，比如增/删/改  pod）。</p>
+<h5 id="4-声明式api"><a href="#4-声明式api" class="headerlink" title="4.声明式api"></a>4.声明式api</h5><p>​          所谓声明式就是“告诉 K8s 你要什么，而不是告诉它怎么做的命令”，一个很熟悉的例子就是 SQL，你“告诉 DB 根据条件和各类算子返回数据，而不是告诉它怎么遍历，过滤，聚合”。在 K8s 里面，声明式的体现就是 kubectl apply 命令，在对象创建和后续更新中一直使用相同的 apply 命令，告诉 K8s 对象的终态即可，底层是通过执行了一个对原有 API 对象的 PATCH 操作来实现的，可以一次性处理多个写操作，具备 Merge 能力 diff 出最终的 PATCH，而命令式一次只能处理一个写请求。</p>
+<p>5.像build-in资源一样构建自己的自定义资源（CRD-Customize Resource Definition）<br>   对于用户来说，实现 CRD 扩展主要做两件事：<br>       1.编写 CRD 并将其部署到 K8s 集群里；</p>
+<p>（这一步的作用就是让 K8s 知道有这个资源及其结构属性，在用户提交该自定义资源的定义时（通常是 YAML 文件定义），K8s 能够成功校验该资源并创建出对应的 Go struct 进行持久化，同时触发控制器的调谐逻辑。）</p>
+<p>​      2.编写 Controller 并将其部署到 K8s 集群里。（这一步的作用就是实现调谐逻辑。）</p>
+<h1 id="二、kubebuilder实现流程"><a href="#二、kubebuilder实现流程" class="headerlink" title="二、kubebuilder实现流程"></a>二、kubebuilder实现流程</h1><ol>
+<li><p>首先是我們自己定义CRDs文件（通常是yaml文件）</p>
+<p>​            <strong>Scheme</strong>組件主要是负责將CRD文件中我的GRVs映射成GO type，通过射成go type。控制器可以通过Go type获取到期望狀態以及其它辅助信息進行调谐逻辑。</p>
+<p>​            <strong>Cache</strong>組件负责在 Controller 进程里面根据 Scheme 同步 Api Server 中所有该 Controller 关心 GVKs 的 GVRs，其核心是 GVK -&gt; Informer 的映射，Informer 会负责监听对应 GVK 的 GVRs 的创建/删除/更新操作，以触发 Controller 的 Reconcile 逻辑。</p>
+<ul>
+<li><p>主要作用有兩個：</p>
+<pre><code>        第一个是从Api server中获取实际状态（ListandWatch） 
+        第二个是衝从cheme中获取期望状态（Watch）
+        通过比较两种状态来触发调谐循环（Reconcile  Loop)
+</code></pre>
+</li>
+<li><p>Client組件主要是负责对某些资源类型进行添加-刪除-更新等操作：</p>
+<pre><code>        查詢功能主要是实际查询本地的Cache(R),写操作是直接访问Api Server(W)
+</code></pre>
+<p><strong>Index</strong>:由于 Controller 经常要对 Cache 进行查询，Kubebuilder 提供 Index utility 给 Cache 加索引提升查询效率。</p>
+<p><strong>Finalizer</strong>:在一般情况下，如果资源被删除之后，我们虽然能够被触发删除事件，但是这个时候从 Cache 里面无法读取任何被删除对象的信息，这样一来，导致很多垃圾清理工作因为信息不足无法进行，K8s 的 Finalizer 字段用于处理这种情况。在 K8s 中，只要对象 ObjectMeta 里面的 Finalizers 不为空，对该对象的 delete 操作就会转变为 update 操作，具体说就是 update  deletionTimestamp 字段，其意义就是告诉 K8s 的 GC“在deletionTimestamp 这个时刻之后，只要 Finalizers 为空，就立马删除掉该对象”。</p>
+</li>
+</ul>
+<p>​       <strong>OwenrReference</strong>:K8s GC 在删除一个对象时，任何 ownerReference 是该对象的对象都会被清除，与此同时，Kubebuidler 支   持所有对象的变更都会触发 Owner 对象 controller 的 Reconcile 方法。</p>
+<p>​        方便反向查找创建资源的对象。<br>​        方便进行级联删除。</p>
+</li>
+</ol>
+<h1 id="三、附带图示"><a href="#三、附带图示" class="headerlink" title="三、附带图示"></a>三、附带图示</h1><h5 id="控制循环中逻辑的传感器主要由-Reflector、Informer、Indexer-三个组件构成。"><a href="#控制循环中逻辑的传感器主要由-Reflector、Informer、Indexer-三个组件构成。" class="headerlink" title="控制循环中逻辑的传感器主要由 Reflector、Informer、Indexer 三个组件构成。"></a>控制循环中逻辑的传感器主要由 Reflector、Informer、Indexer 三个组件构成。</h5><p><img src="1.png"></p>
+<p>​        <strong>Reflector</strong> 通过 List 和 Watch K8s server 来获取资源的数据。List 用来在 Controller 重启以及 Watch 中断的情况下，进行系统资源的全量更新；而 Watch 则在多次 List 之间进行增量的资源更新；Reflector 在获取新的资源数据后，会在 Delta 队列中塞入一个包括资源对象信息本身以及资源对象事件类型的 Delta 记录，Delta 队列中可以保证同一个对象在队列中仅有一条记录，从而避免 Reflector 重新 List 和 Watch 的时候产生重复的记录。</p>
+<p>​        <strong>Informer</strong> 组件不断地从 Delta 队列中弹出 delta 记录，然后把资源对象交给 indexer，让 <strong>indexer</strong> 把资源记录在一个缓存中，缓存在默认设置下是用资源的命名空间来做索引的，并且可以被 Controller Manager 或多个 Controller 所共享。之后，再把这个事件交给事件的回调函数控制</p>
+<p>​        循环中的控制器组件主要由事件处理函数以及 worker 组成，事件处理函数之间会相互关注资源的新增、更新、删除的事件，并根据控制器的逻辑去决定是否需要处理。对需要处理的事件，会把事件关联资源的命名空间以及名字塞入一个工作队列中，并且由后续的 worker 池中的一个 Worker 来处理，工作队列会对存储的对象进行去重，从而避免多个 Woker 处理同一个资源的情况。</p>
+<p>​        Worker 在处理资源对象时，一般需要用资源的名字来重新获得最新的资源数据，用来创建或者更新资源对象，或者调用其他的外部服务，Worker 如果处理失败的时候，一般情况下会把资源的名字重新加入到工作队列中，从而方便之后进行重试。</p>
+<h3 id="控制循环例子-扩容（RS）"><a href="#控制循环例子-扩容（RS）" class="headerlink" title="控制循环例子-扩容（RS）"></a>控制循环例子-扩容（RS）</h3><p>​        ReplicaSet 是一个用来描述无状态应用的扩缩容行为的资源， ReplicaSet controler 通过监听 ReplicaSet 资源来维持应用希望的状态数量，ReplicaSet 中通过 selector 来匹配所关联的 Pod，在这里考虑 ReplicaSet rsA 的，replicas 从 2 被改到 3 的场景。</p>
 <p><img src="2.png" alt="2"></p>
-<p>首先，Reflector 会 watch 到 ReplicaSet 和 Pod 两种资源的变化,发现 ReplicaSet 发生变化后，在 delta 队列中塞入了对象是 rsA，而且类型是更新的记录。</p>
-<p>Informer 一方面把新的 ReplicaSet 更新到缓存中，并与 Namespace nsA 作为索引。另外一方面，调用 Update 的回调函数，ReplicaSet 控制器发现 ReplicaSet 发生变化后会把字符串的 nsA/rsA 字符串塞入到工作队列中，工作队列后的一个 Worker 从工作队列中取到了 nsA/rsA 这个字符串的 key，并且从缓存中取到了最新的 ReplicaSet 数据。</p>
-<p>Worker 通过比较 ReplicaSet 中 spec 和 status 里的数值，发现需要对这个 ReplicaSet 进行扩容，因此 ReplicaSet 的 Worker 创建了一个 Pod，这个 pod 中的 Ownereference 取向了 ReplicaSet rsA。</p>
+<p>​        首先，Reflector 会 watch 到 ReplicaSet 和 Pod 两种资源的变化,发现 ReplicaSet 发生变化后，在 delta 队列中塞入了对象是 rsA，而且类型是更新的记录。</p>
+<p>​        Informer 一方面把新的 ReplicaSet 更新到缓存中，并与 Namespace nsA 作为索引。另外一方面，调用 Update 的回调函数，ReplicaSet 控制器发现 ReplicaSet 发生变化后会把字符串的 nsA/rsA 字符串塞入到工作队列中，工作队列后的一个 Worker 从工作队列中取到了 nsA/rsA 这个字符串的 key，并且从缓存中取到了最新的 ReplicaSet 数据。</p>
+<p>​        Worker 通过比较 ReplicaSet 中 spec 和 status 里的数值，发现需要对这个 ReplicaSet 进行扩容，因此 ReplicaSet 的 Worker 创建了一个 Pod，这个 pod 中的 Ownereference 取向了 ReplicaSet rsA。</p>
 <p><img src="3.png" alt="3"></p>
-<p>然后 Reflector Watch 到的 Pod 新增事件，在 delta 队列中额外加入了 Add 类型的 deta 记录，一方面把新的 Pod 记录通过 Indexer 存储到了缓存中，另一方面调用了 ReplicaSet 控制器的 Add 回调函数，Add 回调函数通过检查 pod ownerReferences 找到了对应的 ReplicaSet，并把包括 ReplicaSet 命名空间和字符串塞入到了工作队列中。</p>
-<p>ReplicaSet 的 Woker 在得到新的工作项之后，从缓存中取到了新的 ReplicaSet 记录，并得到了其所有创建的 Pod，因为 ReplicaSet 的状态不是最新的，也就是所有创建 Pod 的数量不是最新的。因此在此时 ReplicaSet 更新 status 使得 spec 和 status 达成一致。</p>
+<p>​        然后 Reflector Watch 到的 Pod 新增事件，在 delta 队列中额外加入了 Add 类型的 deta 记录，一方面把新的 Pod 记录通过 Indexer 存储到了缓存中，另一方面调用了 ReplicaSet 控制器的 Add 回调函数，Add 回调函数通过检查 pod ownerReferences 找到了对应的 ReplicaSet，并把包括 ReplicaSet 命名空间和字符串塞入到了工作队列中。</p>
+<p>​        ReplicaSet 的 Woker 在得到新的工作项之后，从缓存中取到了新的 ReplicaSet 记录，并得到了其所有创建的 Pod，因为 ReplicaSet 的状态不是最新的，也就是所有创建 Pod 的数量不是最新的。因此在此时 ReplicaSet 更新 status 使得 spec 和 status 达成一致。</p>
 
                 
             </div>
@@ -944,7 +961,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">2.5k</span>&nbsp;字
+                class="white-color">2.6k</span>&nbsp;字
             
             
             
